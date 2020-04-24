@@ -22,18 +22,17 @@ public class Writer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "First name cannot be empty")
-    @Length(max = 255, message = "First name too long")
+    @NotBlank
+    @Length(max = 255)
     @Column(name = "first_name")
     private String firstName;
 
-    @NotBlank(message = "Last name cannot be empty")
-    @Length(max = 255, message = "Last name too long")
+    @NotBlank
+    @Length(max = 255)
     @Column(name = "last_name")
     private String lastName;
 
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    /*@JsonBackReference*/
     private List<Book> books;
 
 

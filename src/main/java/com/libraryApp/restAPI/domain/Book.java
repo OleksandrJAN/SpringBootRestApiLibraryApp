@@ -20,13 +20,13 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Book name cannot be empty")
-    @Length(max = 127, message = "Book name too long")
+    @NotBlank
+    @Length(max = 127)
     @Column(name = "book_name")
     private String bookName;
 
-    @NotBlank(message = "Annotation cannot be empty")
-    @Length(max = 2047, message = "Annotation too long")
+    @NotBlank
+    @Length(max = 2047)
     private String annotation;
 
 
@@ -35,7 +35,7 @@ public class Book {
     @Column(name = "publication_date")
     private Date publicationDate;
 
-    @Length(max = 255, message = "Poster file name too long")
+    @Length(max = 255)
     private String filename;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -46,7 +46,6 @@ public class Book {
     @CollectionTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "genre")
-//    @JsonProperty("genres")
     private Set<Genre> genres;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
