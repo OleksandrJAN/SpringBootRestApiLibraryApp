@@ -1,0 +1,173 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1.0.0" author="OleksandrJAN">
+        <createTable tableName="usr">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="username" type="VARCHAR(127)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="password" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="active" type="BOOLEAN" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.1" author="OleksandrJAN">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="role" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.2" author="OleksandrJAN">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_roles"
+                                 constraintName="fk_user_roles_user"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="usr"
+        />
+    </changeSet>
+
+    <changeSet id="1.0.3" author="OleksandrJAN">
+        <createTable tableName="writer">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="first_name" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_name" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.4" author="OleksandrJAN">
+        <createTable tableName="book">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="book_name" type="VARCHAR(127)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="annotation" type="VARCHAR(2047)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="filename" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="publication_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="writer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.5" author="OleksandrJAN">
+        <createTable tableName="book_genres">
+            <column name="book_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="genre" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.6" author="OleksandrJAN">
+        <addForeignKeyConstraint baseColumnNames="book_id"
+                                 baseTableName="book_genres"
+                                 constraintName="fk_book_genres_book"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="book"
+        />
+    </changeSet>
+
+    <changeSet id="1.0.7" author="OleksandrJAN">
+        <addForeignKeyConstraint baseColumnNames="writer_id"
+                                 baseTableName="book"
+                                 constraintName="fk_book_writer"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="writer"
+        />
+    </changeSet>
+
+    <changeSet id="1.0.8" author="OleksandrJAN">
+        <createTable tableName="review">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="text" type="VARCHAR(2047)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="assessment" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="book_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.9" author="OleksandrJAN">
+        <addForeignKeyConstraint baseColumnNames="book_id"
+                                 baseTableName="review"
+                                 constraintName="fk_review_book"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="book"
+        />
+    </changeSet>
+
+    <changeSet id="1.0.10" author="OleksandrJAN">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="review"
+                                 constraintName="fk_review_user"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="usr"
+        />
+    </changeSet>
+
+</databaseChangeLog>
