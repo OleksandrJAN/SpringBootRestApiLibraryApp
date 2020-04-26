@@ -40,7 +40,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("login")
-    public ResponseEntity login(@RequestBody SignInForm signInRequest) {
+    public ResponseEntity login(@Valid @RequestBody SignInForm signInRequest) {
         try {
             String username = signInRequest.getUsername();
             User user = userService.getByUsername(username);
@@ -70,7 +70,7 @@ public class AuthenticationController {
     public ResponseEntity registerUser(@Valid @RequestBody SignUpForm signUpRequest) {
         if (!signUpRequest.isCorrectPasswords()) {
             return new ResponseEntity<>(
-                    new ResponseMessage("Fail -> Passwords is incorrect!"),
+                    new ResponseMessage("Passwords is incorrect!"),
                     HttpStatus.BAD_REQUEST
             );
         }
@@ -80,11 +80,11 @@ public class AuthenticationController {
         String password = signUpRequest.getPassword();
         if (!userService.create(username, password)) {
             return new ResponseEntity<>(
-                    new ResponseMessage("Fail -> Username is already taken!"),
+                    new ResponseMessage("Username is already taken!"),
                     HttpStatus.BAD_REQUEST
             );
         }
 
-        return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.CREATED);
     }
 }
