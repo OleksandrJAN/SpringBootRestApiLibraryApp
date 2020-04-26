@@ -1,7 +1,15 @@
 package com.libraryApp.restAPI.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class SignInForm {
+    @NotBlank
+    @Size(min = 3, max = 255)
     private String username;
+
+    @NotBlank
+    @Size(min = 3, max = 255)
     private String password;
 
     public String getUsername() {
