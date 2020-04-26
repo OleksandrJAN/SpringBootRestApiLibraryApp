@@ -5,6 +5,7 @@ import com.libraryApp.restAPI.service.WriterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,19 +38,20 @@ public class WriterController {
 
 
     @PostMapping("/writers")
-    public ResponseEntity<Writer> createWriter(@RequestBody Writer writer) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity createWriter(@RequestBody Writer writer) {
         /* VALIDATION */
 
         if (writerService.addWriter(writer)) {
-            return new ResponseEntity<>(writer, HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(writer);
         }
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+        return ResponseEntity.badRequest().body("Writer with this first name and last name exists");
     }
 
     @PutMapping("/writers/{currentWriter:[\\d]+}")
-    public ResponseEntity<Writer> updateWriter(
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity updateWriter(
             @PathVariable Writer currentWriter,
             @RequestBody Writer writer
     ) {
@@ -57,21 +59,22 @@ public class WriterController {
 
         if (currentWriter != null) {
             if (writerService.updateWriter(writer, currentWriter)) {
-                return new ResponseEntity<>(currentWriter, HttpStatus.OK);
+                return ResponseEntity.ok(currentWriter);
             }
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        return ResponseEntity.badRequest().body("Writer with this first name and last name exists");
     }
 
     @DeleteMapping("/writers/{writer:[\\d]+}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity deleteWriter(@PathVariable Writer writer) {
         if (writer != null) {
             writerService.deleteWriter(writer);
             return new ResponseEntity(HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
 

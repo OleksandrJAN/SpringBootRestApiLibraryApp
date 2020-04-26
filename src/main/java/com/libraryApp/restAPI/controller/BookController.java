@@ -6,8 +6,11 @@ import com.libraryApp.restAPI.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -39,20 +42,21 @@ public class BookController {
 
 
     @PostMapping("books")
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity createBook(@RequestBody Book book) {
         /* VALIDATION?! */
 
         if (bookService.addBook(book)) {
-            return new ResponseEntity<>(book, HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(book);
         }
 
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body("Book with this book name and writer exists");
     }
 
 
     @PutMapping("/books/{currentBook:[\\d]+}")
-    public ResponseEntity<Book> updateBook(
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity updateBook(
             @PathVariable Book currentBook,
             @RequestBody Book book
     ) {
@@ -60,21 +64,22 @@ public class BookController {
 
         if (currentBook != null) {
             if (bookService.updateBook(book, currentBook)) {
-                return new ResponseEntity<>(currentBook, HttpStatus.OK);
+                return ResponseEntity.ok(currentBook);
             }
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        return ResponseEntity.badRequest().body("Book with this book name and writer exists");
     }
 
     @DeleteMapping("/books/{book:[\\d]+}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity deleteBook(@PathVariable Book book) {
         if (book != null) {
             bookService.deleteBook(book);
             return new ResponseEntity(HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
 
