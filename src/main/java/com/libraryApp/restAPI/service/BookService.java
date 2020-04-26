@@ -50,7 +50,9 @@ public class BookService {
 
         if (isNewBookName || isNewWriter) {
             if (isBookExists(editedBook)) {
-                // удаляем постер, т.к. не обновляем книгу в DB
+                // Если editedBook дублирует книгу из DB, тогда нужно проверить isNewPosterFile
+                // Если isNewPosterFile == true тогда на сервер был загружен новый файл,
+                // но т.к. editedBook мы не сохраняем в DB, то новый файл нужно удалить
                 if (isNewPosterFile) {
                     imageService.deleteFile(editedBook.getFilename());
                 }
