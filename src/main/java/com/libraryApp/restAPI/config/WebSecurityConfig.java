@@ -1,9 +1,9 @@
 package com.libraryApp.restAPI.config;
 
-import com.libraryApp.restAPI.security.jwt.JwtUserDetailsService;
 import com.libraryApp.restAPI.security.jwt.JwtAuthenticationEntryPoint;
 import com.libraryApp.restAPI.security.jwt.JwtConfigurer;
 import com.libraryApp.restAPI.security.jwt.JwtTokenProvider;
+import com.libraryApp.restAPI.security.jwt.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @Configuration
@@ -45,6 +47,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(8);
     }
 
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .allowedOrigins("http://localhost:4200");
+            }
+        };
+    }
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -65,13 +81,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .csrf().disable()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                //                .headers().addHeaderWriter(
-                //                        new StaticHeadersWriter("Access-Control-Allow-Origin", "http://localhost:4200")
-                //                );
                     .authorizeRequests()
                     .antMatchers("/auth/**").permitAll()
                     .antMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
+                .and()
+                    .cors()
                 .and()
                     .apply(new JwtConfigurer(jwtTokenProvider))
                 .and()
