@@ -8,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.net.URI;
 import java.util.List;
 
 
@@ -66,9 +64,11 @@ public class BookController {
             if (bookService.updateBook(book, currentBook)) {
                 return ResponseEntity.ok(currentBook);
             }
+
+            return ResponseEntity.badRequest().body("Book with this book name and writer exists");
         }
 
-        return ResponseEntity.badRequest().body("Book with this book name and writer exists");
+        return ResponseEntity.badRequest().body("Book not found");
     }
 
     @DeleteMapping("/books/{book:[\\d]+}")
@@ -79,7 +79,7 @@ public class BookController {
             return new ResponseEntity(HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body("Book not found");
     }
 
 
