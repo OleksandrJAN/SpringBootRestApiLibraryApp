@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -27,7 +28,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtUserDetailsService jwtUserDetailsService;
-
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 
@@ -83,7 +83,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests()
                     .antMatchers("/auth/**").permitAll()
-                    .antMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
                 .and()
                     .cors()
@@ -91,7 +90,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .apply(new JwtConfigurer(jwtTokenProvider))
                 .and()
                     .exceptionHandling()
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                    .logout()
+                    .logoutUrl("/auth/logout")
+                    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
     }
 
 
