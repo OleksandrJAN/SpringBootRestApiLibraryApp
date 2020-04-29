@@ -5,12 +5,14 @@ import com.libraryApp.restAPI.domain.Role;
 import com.libraryApp.restAPI.domain.User;
 import com.libraryApp.restAPI.dto.UserDto;
 import com.libraryApp.restAPI.repo.UserRepo;
+import com.libraryApp.restAPI.security.jwt.JwtUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -61,6 +63,22 @@ public class UserService {
 
     public void deleteUser(User user) {
         userRepo.delete(user);
+    }
+
+
+    public boolean isCorrectUserPassword(String passwordConfirmation, User user) {
+        return passwordEncoder.matches(passwordConfirmation, user.getPassword());
+    }
+
+    public void updateUserPassword(String newPassword, User user) {
+        String encodedPass = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPass);
+        userRepo.save(user);
+    }
+
+    public void updateUserRole(Set<Role> roles, User user) {
+        user.setRoles(roles);
+        userRepo.save(user);
     }
 
 }
