@@ -1,5 +1,6 @@
 package com.libraryApp.restAPI.controller;
 
+import com.libraryApp.restAPI.domain.Book;
 import com.libraryApp.restAPI.domain.Writer;
 import com.libraryApp.restAPI.service.WriterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,15 @@ public class WriterController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("/writers/{writer:[\\d]+}/books")
+    public ResponseEntity<List<Book>> getWriterBooks(@PathVariable Writer writer) {
+        if (writer != null) {
+            return new ResponseEntity<>(writer.getBooks(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 
     @PostMapping("/writers")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -61,9 +71,11 @@ public class WriterController {
             if (writerService.updateWriter(writer, currentWriter)) {
                 return ResponseEntity.ok(currentWriter);
             }
+
+            return ResponseEntity.badRequest().body("Writer with this first name and last name exists");
         }
 
-        return ResponseEntity.badRequest().body("Writer with this first name and last name exists");
+        return ResponseEntity.badRequest().body("Writer not found");
     }
 
     @DeleteMapping("/writers/{writer:[\\d]+}")
@@ -74,7 +86,7 @@ public class WriterController {
             return new ResponseEntity(HttpStatus.OK);
         }
 
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body("Writer not found");
     }
 
 
