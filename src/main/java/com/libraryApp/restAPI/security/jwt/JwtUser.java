@@ -1,7 +1,9 @@
 package com.libraryApp.restAPI.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.libraryApp.restAPI.domain.Role;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -27,6 +29,10 @@ public class JwtUser implements UserDetails {
         this.password = password;
         this.enabled = enabled;
         this.authorities = authorities;
+    }
+
+    public boolean isAdmin() {
+        return authorities.contains(new SimpleGrantedAuthority(Role.ROLE_ADMIN.name()));
     }
 
     @JsonIgnore
