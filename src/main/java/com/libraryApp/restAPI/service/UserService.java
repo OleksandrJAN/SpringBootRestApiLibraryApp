@@ -3,6 +3,7 @@ package com.libraryApp.restAPI.service;
 
 import com.libraryApp.restAPI.domain.Role;
 import com.libraryApp.restAPI.domain.User;
+import com.libraryApp.restAPI.dto.UserDto;
 import com.libraryApp.restAPI.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -30,7 +32,7 @@ public class UserService {
         return userFromDb != null;
     }
 
-    public boolean create(String username, String password) {
+    public boolean createUser(String username, String password) {
         if (isUserExists(username)) {
             return false;
         }
@@ -45,15 +47,19 @@ public class UserService {
         return true;
     }
 
-    public List<User> getAll() {
-        return userRepo.findAll();
+    public List<UserDto> getUsers() {
+        List<User> users = userRepo.findAll();
+
+        return users.stream().map(
+                user -> new UserDto(user)
+        ).collect(Collectors.toList());
     }
 
     public User getByUsername(String username) {
         return userRepo.findByUsername(username);
     }
 
-    public void delete(User user) {
+    public void deleteUser(User user) {
         userRepo.delete(user);
     }
 

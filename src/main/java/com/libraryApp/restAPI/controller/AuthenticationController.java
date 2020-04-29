@@ -6,7 +6,6 @@ import com.libraryApp.restAPI.dto.SignInForm;
 import com.libraryApp.restAPI.dto.AuthenticationResponseDto;
 import com.libraryApp.restAPI.dto.SignUpForm;
 import com.libraryApp.restAPI.security.jwt.JwtTokenProvider;
-import com.libraryApp.restAPI.security.jwt.JwtUser;
 import com.libraryApp.restAPI.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,7 +77,7 @@ public class AuthenticationController {
 
         String username = signUpRequest.getUsername();
         String password = signUpRequest.getPassword();
-        if (!userService.create(username, password)) {
+        if (!userService.createUser(username, password)) {
             return new ResponseEntity<>(
                     new ResponseMessage("Username is already taken!"),
                     HttpStatus.BAD_REQUEST
