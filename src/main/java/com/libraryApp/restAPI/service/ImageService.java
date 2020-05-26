@@ -23,16 +23,14 @@ public class ImageService {
         boolean isImageFile = ImageIO.read(file.getInputStream()) != null;
 
         if (isImageFile) {
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdir();
             }
 
-            file.transferTo(new File(uploadPath + "/" + resultFilename));
-
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFilename = uuidFile + "." + file.getOriginalFilename();
+            file.transferTo(new File(uploadDir.getAbsolutePath() + "/" + resultFilename));
             return resultFilename;
         }
 
